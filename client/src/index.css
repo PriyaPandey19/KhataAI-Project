@@ -1,0 +1,105 @@
+@import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+
+* {
+  font-family: 'Sora', sans-serif;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #030d17;
+  color: #ffffff;
+}
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #051424; }
+::-webkit-scrollbar-thumb { background: #10b981; border-radius: 4px; }
+
+
+
+/* Responsive grids */
+.grid-3-responsive {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+}
+
+.grid-chart-risk {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 14px;
+}
+
+.grid-2-responsive {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+}
+
+.grid-customers {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+@media (max-width: 1024px) {
+    .grid-3-responsive { grid-template-columns: 1fr 1fr; }
+    .grid-chart-risk   { grid-template-columns: 1fr; }
+    .grid-customers    { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+    .grid-3-responsive { grid-template-columns: 1fr; }
+    .grid-2-responsive { grid-template-columns: 1fr; }
+    .grid-customers    { grid-template-columns: 1fr; }
+    .grid-chart-risk   { grid-template-columns: 1fr; }
+}
+
+.scroll-hidden {
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+.scroll-hidden::-webkit-scrollbar {
+    height: 4px;
+}
+.responsive-page-padding {
+    padding: 20px 24px;
+}
+@media (max-width: 640px) {
+    .responsive-page-padding {
+        padding: 16px 12px;
+    }
+}
+/* Sidebar + main content responsive layout */
+@media (max-width: 1024px) {
+    .main-content {
+        margin-left: 0 !important;
+        padding: 70px 16px 24px 16px !important;
+    }
+}
+
+@media (max-width: 640px) {
+    .main-content {
+        padding: 70px 12px 20px 12px !important;
+    }
+}
+
+/* Table horizontal scroll on small screens */
+.table-responsive-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+.table-responsive-wrap table {
+    min-width: 600px;
+}
+
+/* Hide table on mobile, show cards instead */
+@media (max-width: 640px) {
+    .desktop-table { display: none !important; }
+    .mobile-card-list { display: flex !important; flex-direction: column; gap: 10px; }
+}
+@media (min-width: 641px) {
+    .mobile-card-list { display: none !important; }
+}
