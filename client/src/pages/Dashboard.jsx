@@ -43,7 +43,7 @@ const Dashboard = () => {
 
     useEffect(() => {
         load();
-        const socket = io('http://localhost:5000');
+        const socket = io('https://khataai-project.onrender.com');
         socket.on('newTransaction', (data) => {
             toast.success(`New: ${data.customerName}`);
             load();

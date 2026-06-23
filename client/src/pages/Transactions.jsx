@@ -289,7 +289,7 @@ const Transactions = () => {
     useEffect(() => { load(1); }, [typeFilter, dateFrom, dateTo]);
 
     useEffect(() => {
-        const socket = io('http://localhost:5000');
+        const socket = io('https://khataai-project.onrender.com');
         socket.on('newTransaction', (data) => {
             toast.success(`New entry: ${data.customerName}`);
             load(1);
