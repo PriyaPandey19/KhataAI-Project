@@ -5,7 +5,7 @@ import axios from 'axios';
 
 //base url sab routes yahan se shuru hote hain
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+    baseURL: import.meta.env.VITE_API_URL || 'https://khataai-project.onrender.com/api'
 });
 
 //request interceptor - har API call mein automatically JWT token lagao
