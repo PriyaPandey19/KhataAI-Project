@@ -47,7 +47,7 @@ const AddModal = ({ onClose, onSuccess, customers }) => {
         }
         setSaving(true);
         try {
-            await transactionAPI.create({
+            await transactionAPI.add({
                 customerId:  form.customerId,
                 type:        form.type,
                 amount:      Number(form.amount),
