@@ -4,7 +4,7 @@
 import axios from 'axios';
 
 //base url sab routes yahan se shuru hote hain
-const api = axios.create({
+const api = axios.add({
     baseURL: import.meta.env.VITE_API_URL || 'https://khataai-project.onrender.com/api'
 });
 
