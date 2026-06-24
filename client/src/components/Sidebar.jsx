@@ -16,14 +16,13 @@ const navItems = [
 ];
 
 const Sidebar = ({ onNavigate }) => {
-    const [listening, setListening] = useState(false);
+    const [listening, setListening]   = useState(false);
     const [processing, setProcessing] = useState(false);
 
     const startVoiceEntry = () => {
         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
         if (!SpeechRecognition) {
-            toast.error('Voice input not supported in this browser. Try Chrome.');
+            toast.error('Voice input not supported. Try Chrome.');
             return;
         }
 
@@ -32,69 +31,44 @@ const Sidebar = ({ onNavigate }) => {
         recognition.continuous = false;
         recognition.interimResults = false;
 
-        recognition.onstart = () => {
-            setListening(true);
-            toast('🎤 Listening... speak now', { duration: 2000 });
-        };
+        recognition.onstart  = () => { setListening(true); toast('🎤 Listening...', { duration: 2000 }); };
+        recognition.onend    = () => setListening(false);
+        recognition.onerror  = () => { setListening(false); toast.error('Voice input failed. Try again.'); };
 
         recognition.onresult = async (event) => {
             const transcript = event.results[0][0].transcript;
             setListening(false);
             setProcessing(true);
             toast(`Heard: "${transcript}"`, { duration: 3000 });
-
             try {
                 const res = await voiceAPI.process(transcript);
                 const data = res.data?.data;
                 const action = data.type === 'credit' ? 'Udhaar diya' : 'Payment mili';
                 toast.success(`${action}: ${data.customerName} — ₹${data.amount}`, { duration: 4000 });
             } catch (e) {
-                console.error('Voice entry error:', e);
                 toast.error(e?.response?.data?.message || 'Could not process voice entry');
             } finally {
                 setProcessing(false);
             }
         };
 
-        recognition.onerror = (event) => {
-            setListening(false);
-            if (event.error === 'no-speech') {
-                toast.error('No speech detected. Try again.');
-            } else {
-                toast.error('Voice input failed. Try again.');
-            }
-        };
-
-        recognition.onend = () => {
-            setListening(false);
-        };
-
         recognition.start();
     };
 
     return (
-        <div
-            className='flex flex-col justify-between'
-            style={{
-                width: '208px',
-                minHeight: '100vh',
-                background: '#051424',
-                zIndex: 50,
-                padding: '24px 16px',
-            }}
-        >
+        <div style={{
+            width: '208px', minHeight: '100vh', background: '#051424',
+            zIndex: 50, padding: '24px 16px',
+            display: 'flex', flexDirection: 'column', justifyContent: 'space-between'
+        }}>
             <div>
                 {/* Logo */}
-                <div className='flex items-center gap-3' style={{ marginBottom: '40px', paddingLeft: '4px' }}>
-                    <div style={{
-                        width: '38px', height: '38px', borderRadius: '10px',
-                        background: '#10b981', display: 'flex',
-                        alignItems: 'center', justifyContent: 'center', flexShrink: 0
-                    }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '40px', paddingLeft: '4px' }}>
+                    <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: '#10b981', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
                         <MdReceipt style={{ color: '#fff', fontSize: '20px' }} />
                     </div>
                     <div>
-                        <p style={{ color: '#ffffff', fontWeight: 700, fontSize: '15px', lineHeight: '1.2' }}>KhataAI</p>
+                        <p style={{ color: '#fff', fontWeight: 700, fontSize: '15px', lineHeight: '1.2' }}>KhataAI</p>
                         <p style={{ color: '#94a3b8', fontSize: '9px', textTransform: 'uppercase', letterSpacing: '0.12em', marginTop: '2px' }}>Kirana Ledger</p>
                     </div>
                 </div>
@@ -107,31 +81,27 @@ const Sidebar = ({ onNavigate }) => {
                             to={path}
                             onClick={() => onNavigate?.()}
                             style={({ isActive }) => ({
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '10px',
-                                padding: '10px 12px',
-                                borderRadius: '8px',
-                                fontSize: '13px',
-                                fontWeight: isActive ? 600 : 400,
+                                display: 'flex', alignItems: 'center', gap: '10px',
+                                padding: '10px 12px', borderRadius: '8px',
+                                fontSize: '13px', fontWeight: isActive ? 600 : 400,
                                 background: isActive ? '#10b981' : 'transparent',
-                                color: isActive ? '#ffffff' : '#94a3b8',
-                                textDecoration: 'none',
-                                transition: 'all 0.15s',
+                                color: isActive ? '#fff' : '#94a3b8',
+                                textDecoration: 'none', transition: 'all 0.15s',
                             })}
                             onMouseEnter={e => {
-                                if (!e.currentTarget.style.background.includes('10b981')) {
+                                // ✅ fixed: removed classList.contains('active') which caused the error
+                                const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
+                                if (!isActive) {
                                     e.currentTarget.style.background = 'rgba(16,185,129,0.08)';
-                                    e.currentTarget.style.color = '#ffffff';
+                                    e.currentTarget.style.color = '#fff';
                                 }
                             }}
                             onMouseLeave={e => {
-                                if (!e.currentTarget.classList.contains('active')) {
-                                    const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
-                                    if (!isActive) {
-                                        e.currentTarget.style.background = 'transparent';
-                                        e.currentTarget.style.color = '#94a3b8';
-                                    }
+                                // ✅ fixed: only use aria-current to check active state
+                                const isActive = e.currentTarget.getAttribute('aria-current') === 'page';
+                                if (!isActive) {
+                                    e.currentTarget.style.background = 'transparent';
+                                    e.currentTarget.style.color = '#94a3b8';
                                 }
                             }}
                         >
@@ -142,35 +112,18 @@ const Sidebar = ({ onNavigate }) => {
                 </nav>
             </div>
 
-            {/* Voice Entry button with pulse */}
+            {/* Voice Entry button */}
             <div style={{ position: 'relative', padding: '8px 0' }}>
-                {/* Pulse rings */}
-                <span style={{
-                    position: 'absolute',
-                    inset: '4px',
-                    borderRadius: '10px',
-                    background: 'rgba(16,185,129,0.35)',
-                    animation: 'sidebarPulse 2s ease-out infinite',
-                    pointerEvents: 'none',
-                }} />
-                <span style={{
-                    position: 'absolute',
-                    inset: '0px',
-                    borderRadius: '12px',
-                    background: 'rgba(16,185,129,0.15)',
-                    animation: 'sidebarPulse 2s ease-out infinite 0.6s',
-                    pointerEvents: 'none',
-                }} />
+                <span style={{ position: 'absolute', inset: '4px', borderRadius: '10px', background: 'rgba(16,185,129,0.35)', animation: 'sidebarPulse 2s ease-out infinite', pointerEvents: 'none' }} />
+                <span style={{ position: 'absolute', inset: '0px', borderRadius: '12px', background: 'rgba(16,185,129,0.15)', animation: 'sidebarPulse 2s ease-out infinite 0.6s', pointerEvents: 'none' }} />
                 <button
                     onClick={startVoiceEntry}
                     disabled={listening || processing}
                     style={{
-                        position: 'relative',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        gap: '8px', width: '100%', padding: '12px 0',
+                        position: 'relative', display: 'flex', alignItems: 'center',
+                        justifyContent: 'center', gap: '8px', width: '100%', padding: '12px 0',
                         borderRadius: '10px', background: '#10b981', border: 'none',
-                        color: '#ffffff', fontSize: '13px', fontWeight: 600,
-                        cursor: 'pointer', transition: 'background 0.15s',
+                        color: '#fff', fontSize: '13px', fontWeight: 600, cursor: 'pointer'
                     }}
                     onMouseEnter={e => e.currentTarget.style.background = '#34d399'}
                     onMouseLeave={e => e.currentTarget.style.background = '#10b981'}
