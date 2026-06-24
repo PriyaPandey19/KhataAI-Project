@@ -209,7 +209,7 @@ exports.getRiskReport = async (req, res, next) => {
             return res.json({ success: true, data: [] });
         }
 
-        const mlResponse = await axios.post('http://localhost:8000/risk-report', {
+        const mlResponse = await axios.post('https://khataai-project-mlpart.onrender.com/risk-report', {
             customers: enrichedCustomers
         });
 
@@ -251,7 +251,7 @@ exports.getSmartInsight = async (req, res, next) => {
             return res.json({ success: true, data: { insight: "No customers yet.", topRiskyCustomers: [] } });
         }
 
-        const mlResponse = await axios.post('http://localhost:8000/smart-insight', {
+        const mlResponse = await axios.post('https://khataai-project-mlpart.onrender.com/smart-insight', {
             customers: enrichedCustomers,
             topN: 3
         });

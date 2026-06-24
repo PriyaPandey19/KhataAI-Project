@@ -113,7 +113,7 @@ const Sidebar = ({ onNavigate }) => {
             </div>
 
             {/* Voice Entry button */}
-            <div style={{ position: 'relative', padding: '8px 0' }}>
+            <div style={{ position: 'relative', padding: '8px 0',marginBottom: '15px' }}>
                 <span style={{ position: 'absolute', inset: '4px', borderRadius: '10px', background: 'rgba(16,185,129,0.35)', animation: 'sidebarPulse 2s ease-out infinite', pointerEvents: 'none' }} />
                 <span style={{ position: 'absolute', inset: '0px', borderRadius: '12px', background: 'rgba(16,185,129,0.15)', animation: 'sidebarPulse 2s ease-out infinite 0.6s', pointerEvents: 'none' }} />
                 <button
