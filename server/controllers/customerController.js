@@ -10,7 +10,8 @@ exports.addCustomer = async (req, res, next) => {
         const customer = await Customer.create({
             shopId: req.user._id,   // consistent: always _id
             name,
-            phone
+            phone,
+            totalBalance: totalBalance || 0
         });
 
         res.status(201).json({ success: true, customer });
