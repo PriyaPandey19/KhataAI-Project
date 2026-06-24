@@ -5,7 +5,7 @@ const Transaction = require('../models/Transaction');
 // ─── ADD CUSTOMER ────────────────────────────────────────────────────────────
 exports.addCustomer = async (req, res, next) => {
     try {
-        const { name, phone } = req.body;
+        const { name, phone,totalBalance } = req.body;
 
         const customer = await Customer.create({
             shopId: req.user._id,   // consistent: always _id
