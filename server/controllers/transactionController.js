@@ -25,7 +25,7 @@ exports.addTransaction = async(req, res, next) => {
             type,
             amount,
             description,
-            source: 'dashboard'
+            source: 'manual'
         });
 
 
