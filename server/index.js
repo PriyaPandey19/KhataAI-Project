@@ -57,6 +57,11 @@ app.get('/',(req,res) => {
     res.json({message: 'Server is running'});
 });
 
+
+app.get('/test',(req,res) => {
+    res.status(200).json({status: 'awake', time: new Date() })
+})
+
 //websocket listen for frontend connections emits events when data changes frontedn receive without polling
 io.on('connection',(socket) => {
     console.log('Client connected', socket.id);
